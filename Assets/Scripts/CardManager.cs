@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+
 public class CardManager : MonoBehaviour
 {
     public static CardManager instance;
@@ -51,10 +52,11 @@ public class CardManager : MonoBehaviour
     }
     private void OnDestroy()
     {
-        gm.onGameInitialized -= OnGameInit;
-        gm.onCardCompared -= RemoveUsedCards;
+        //gm.onGameInitialized -= OnGameInit;
+        //gm.onCardCompared -= RemoveUsedCards;
     }
     void OnGameInit() {
+        cardDist = 2 * cardPosX / 12;
         float pos = -cardPosX;
         for(int i = 0; i < gm.playerCards.Count; i++)
         {
@@ -69,12 +71,14 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < gm.enemyCards.Count; i++)
         {
             GameObject c = Instantiate(cardPrefab, enemyDeck);
-            c.GetComponent<CardDisplay>().MakeCard(gm.playerCards[i], true);
+            c.GetComponent<CardDisplay>().MakeCard(gm.enemyCards[i], true);
             c.transform.localPosition = new Vector3(pos, 0, 0);
             pos += cardDist;
             c.GetComponent<CardDisplay>().mIndex = i;
             enemyCards.Add(c.GetComponent<CardDisplay>());
         }
+        
+        EnemyPlay(0);
     }
     public void ArrangeCard()
     {
@@ -102,7 +106,6 @@ public class CardManager : MonoBehaviour
         CardDisplay e = enemyCards[index];
         e.transform.localScale = new Vector3(1, 1, 1) * hoverScale;
         e.transform.DOMove(enemyPlayed.position, 0.8f).SetEase(moveEase);
-
         enemyCards.RemoveAt(index);
         enemyC = e;
         ArrangeCard();
@@ -122,14 +125,26 @@ public class CardManager : MonoBehaviour
     public void RemoveUsedCards(CardInfo.CompareRes res) {
         playerC.transform.DOMove(usedCard.position, 0.8f).SetEase(moveEase);
         enemyC .transform.DOMove(usedCard.position, 0.8f).SetEase(moveEase);
-        playerC.mSprite.color = Color.black;
-        enemyC.mSprite.color = Color.black;
+        playerC.mSprite.DOColor(Color.black, 0.8f).SetEase(moveEase);
+        enemyC.mSprite.DOColor(Color.black, 0.8f).SetEase(moveEase);
 
         enemyC = null;
         playerC = null;
 
+        if (enemyCards.Count == 0) {
+            foreach (Transform child in playerDeck.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach (Transform child in enemyDeck.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            gm.OnGameOver();
+            return;
+        }
         EnemyPlay(0);
-
+        
         gm.mState = GameManager.GameState.PlayerTurn;
     }
 }
