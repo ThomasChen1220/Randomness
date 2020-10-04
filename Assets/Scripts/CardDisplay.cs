@@ -11,6 +11,7 @@ public class CardDisplay : MonoBehaviour
 
     public int mIndex;
     public TextMeshProUGUI number;
+    public TextMeshProUGUI effect;
     public bool hidden = false;
     public SpriteRenderer mSprite;
 
@@ -26,6 +27,14 @@ public class CardDisplay : MonoBehaviour
         if (hidden)
         {
             mSprite.color = Color.black;
+        }
+        if (info.mEffect == CardInfo.CardEffect.None)
+        {
+            effect.text = "";
+        }
+        else
+        {
+            effect.text = info.mEffect.ToString();
         }
     }
     bool CanPlay() {

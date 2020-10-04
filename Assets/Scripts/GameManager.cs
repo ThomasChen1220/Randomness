@@ -77,6 +77,74 @@ public class GameManager : MonoBehaviour
         scoreText.text = "Your Score: " + playerScore;
         onCardCompared?.Invoke(res);
     }
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            int a, b, c, d;
+            GetBonusPos(out a, out b, out c, out d);
+        }
+    }
+    //List<int> GetRandomInRange(int min, int max, int num)
+    //{
+    //    List<int> res = new List<int>();
+    //    List<int> l = new List<int>();
+    //    for(int i = 0; i < max; i++)
+    //    {
+    //        l.Add(i);
+    //    }
+    //    while (num > 0)
+    //    {
+    //        int index = Random.Range(0, l.Count);
+    //        res.Add(l[index]);
+    //        l.RemoveAt(index);
+    //        num--;
+    //    }
+    //    return res;
+    //}
+    //return the index of first element that is smaller or equal to target from the left 
+    int findGreaterOrEqual(List<int> l, int target)
+    {
+        for(int i = 0; i < l.Count; i++)
+        {
+            if (l[i] >= target) return i;
+        }
+        return -1;
+    }
+    //return the index of first element that is greater or equal to target from the right 
+    int findSmallerOrEqual(List<int> l, int target)
+    {
+        for(int i = l.Count - 1; i >= 0; i--)
+        {
+            if (l[i] <= target) return i;
+        }
+        return -1;
+    }
+    void GetBonusPos(out int pi1, out int pi2, out int gk, out int go)
+    {
+        int index;
+        List<int> emptyNum = new List<int>();
+        for(int i = 0; i < 13; i++)
+        {
+            emptyNum.Add(i);
+        }
+        index = Random.Range(0, 8);
+        pi1 = emptyNum[index];
+        emptyNum.RemoveAt(index);
+
+        index = Random.Range(0, findSmallerOrEqual(emptyNum, 8));
+        pi2 = emptyNum[index];
+        emptyNum.RemoveAt(index);
+
+        index = Random.Range(findGreaterOrEqual(emptyNum, 1), findSmallerOrEqual(emptyNum, 4));
+        gk = emptyNum[index];
+        emptyNum.RemoveAt(index);
+
+        index = Random.Range(findGreaterOrEqual(emptyNum, 9), findSmallerOrEqual(emptyNum, 12));
+        go = emptyNum[index];
+
+        //Debug.Log("Pioneer at: " + (pi1 + 1) + ", " + (pi2 + 1) + ".  " + "GK at : " + (gk + 1) + ", Gov at: " + (go + 1));
+    }
     void InitializeGame()
     {
         playerCards = new List<CardInfo>();
@@ -86,6 +154,18 @@ public class GameManager : MonoBehaviour
             playerCards.Add(new CardInfo(i));
             enemyCards.Add(new CardInfo(i));
         }
+        int p1, p2, gk, gov;
+        GetBonusPos(out p1, out p2, out gk, out gov);
+        playerCards[p1].mEffect = CardInfo.CardEffect.Pioneer;
+        playerCards[p2].mEffect = CardInfo.CardEffect.Pioneer;
+        playerCards[gk].mEffect = CardInfo.CardEffect.GiantKiller;
+        playerCards[gov].mEffect = CardInfo.CardEffect.Governor;
+
+        GetBonusPos(out p1, out p2, out gk, out gov);
+        enemyCards[p1].mEffect = CardInfo.CardEffect.Pioneer;
+        enemyCards[p2].mEffect = CardInfo.CardEffect.Pioneer;
+        enemyCards[gk].mEffect = CardInfo.CardEffect.GiantKiller;
+        enemyCards[gov].mEffect = CardInfo.CardEffect.Governor;
         for (int i = 0; i < enemyCards.Count; i++)
         {
             var temp = enemyCards[i];

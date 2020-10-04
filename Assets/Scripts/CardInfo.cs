@@ -6,6 +6,10 @@ public class CardInfo
 {
     public enum CompareRes { Win, Tie, Lose }
     public int mNum;
+
+    public enum CardEffect { None, Pioneer, GiantKiller, Governor }
+    public CardEffect mEffect;
+
     public CardInfo(int num)
     {
         mNum = num;

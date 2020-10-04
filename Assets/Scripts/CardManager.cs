@@ -20,6 +20,9 @@ public class CardManager : MonoBehaviour
 
     [Header("Card Anim")]
     public float hoverScale = 1.4f;
+
+    [Header("Card Effect")]
+    public int bonusAttack = 0;
     
 
     GameManager gm;
