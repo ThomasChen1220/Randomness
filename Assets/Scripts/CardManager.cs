@@ -20,6 +20,7 @@ public class CardManager : MonoBehaviour
 
     [Header("Card Anim")]
     public float hoverScale = 1.4f;
+    public TextPop textPop;
 
     [Header("Card Effect")]
     public int bonusAttack = 0;
@@ -114,7 +115,7 @@ public class CardManager : MonoBehaviour
         ArrangeCard();
     }
     public void DoCompareCards() {
-        lastRes = playerC.info.BiggerThan(enemyC.info);
+        lastRes = playerC.info.DoCompare(enemyC.info);
         enemyC.mSprite.color = Color.white;
         cardRevealed = true;
     }
@@ -124,6 +125,14 @@ public class CardManager : MonoBehaviour
             cardRevealed = false;
             gm.UpdateScore(lastRes);
         }
+    }
+    public static void DisplayMessage(string t)
+    {
+        instance.textPop.GoIn(t);
+    }
+    public static void FadeMessage()
+    {
+        instance.textPop.Fade();
     }
     public void RemoveUsedCards(CardInfo.CompareRes res) {
         playerC.transform.DOMove(usedCard.position, 0.8f).SetEase(moveEase);
@@ -147,7 +156,7 @@ public class CardManager : MonoBehaviour
             return;
         }
         EnemyPlay(0);
-        
+        textPop.Fade();
         gm.mState = GameManager.GameState.PlayerTurn;
     }
 }

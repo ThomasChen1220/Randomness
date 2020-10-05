@@ -72,8 +72,19 @@ public class GameManager : MonoBehaviour
         InitializeGame();
     }
     public void UpdateScore(CardInfo.CompareRes res) {
-        if (res == CardInfo.CompareRes.Win) playerScore++;
-        else if (res == CardInfo.CompareRes.Lose) playerScore--;
+        if (res == CardInfo.CompareRes.Win)
+        {
+            playerScore++;
+            CardManager.DisplayMessage("You got a point");
+        }
+        else if (res == CardInfo.CompareRes.Lose) {
+            playerScore--;
+            CardManager.DisplayMessage("You lost a point");
+        }
+        else
+        {
+            CardManager.DisplayMessage("Tied");
+        }
         scoreText.text = "Your Score: " + playerScore;
         onCardCompared?.Invoke(res);
     }
@@ -85,23 +96,6 @@ public class GameManager : MonoBehaviour
             GetBonusPos(out a, out b, out c, out d);
         }
     }
-    //List<int> GetRandomInRange(int min, int max, int num)
-    //{
-    //    List<int> res = new List<int>();
-    //    List<int> l = new List<int>();
-    //    for(int i = 0; i < max; i++)
-    //    {
-    //        l.Add(i);
-    //    }
-    //    while (num > 0)
-    //    {
-    //        int index = Random.Range(0, l.Count);
-    //        res.Add(l[index]);
-    //        l.RemoveAt(index);
-    //        num--;
-    //    }
-    //    return res;
-    //}
     //return the index of first element that is smaller or equal to target from the left 
     int findGreaterOrEqual(List<int> l, int target)
     {

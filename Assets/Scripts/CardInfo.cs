@@ -14,15 +14,38 @@ public class CardInfo
     {
         mNum = num;
     }
-    public CompareRes BiggerThan(CardInfo other)
+    public CompareRes DoCompare(CardInfo other)
     {
-        if (mNum == 13 && other.mNum == 1)
-            return CompareRes.Lose;
+        CompareRes res;
+        if(mEffect == CardEffect.GiantKiller && other.mNum >= 11)
+        {
+            res = CompareRes.Win;
+            CardManager.DisplayMessage("Giant Killer Effective");
+        }
+        else if(other.mEffect == CardEffect.GiantKiller && mNum >= 11)
+        {
+            res = CompareRes.Lose;
+            CardManager.DisplayMessage("Giant Killer Effective");
+        }
+        else if (mNum == 13 && other.mNum == 1)
+            res = CompareRes.Lose;
         else if (mNum == other.mNum)
-            return CompareRes.Tie;
+            res = CompareRes.Tie;
         else if (mNum > other.mNum)
-            return CompareRes.Win;
+            res = CompareRes.Win;
         else
-            return CompareRes.Lose;
+            res = CompareRes.Lose;
+
+        if(mEffect==CardEffect.Governor && res == CompareRes.Lose)
+        {
+            res = CompareRes.Tie;
+            CardManager.DisplayMessage("Governor Effective");
+        }
+        if (other.mEffect == CardEffect.Governor && res == CompareRes.Win)
+        {
+            res = CompareRes.Tie;
+            CardManager.DisplayMessage("Governor Effective");
+        }
+        return res;
     }
 }
